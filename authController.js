@@ -5,8 +5,6 @@ const jwt = require('jsonwebtoken');
 const { secret } = require('./config');
 const { validationResult } = require('express-validator');
 
-
-
 const generateAccessToken = (id, roles) => {
     const payload = {
         id,
@@ -14,7 +12,6 @@ const generateAccessToken = (id, roles) => {
     }
     return jwt.sign(payload, secret, { expiresIn: '24h' });
 };
-
 class authController {
 
     async registration(request, response) {
@@ -69,7 +66,44 @@ class authController {
             const users = await User.find();
             response.json(users);
         } catch (error) {
+            console.log(error.message);
+        }
+    }
 
+    async getUserById(request, response) {
+        try {
+            const id = request.params.id;
+            const user = await User.findById(id);
+            return response.json(user);
+        } catch (error) {
+            console.log(error);
+            response.status(400).json({ message: `User with this id was not found!` });
+        }
+    }
+
+    async updateUser(request, response) {
+        try {
+            const id = request.params.id;
+            const updatedName = request.body.username;
+            const updatedRoles = request.body.roles;
+            const newUser = {
+                username: updatedName,
+                roles: updatedRoles
+            }
+            const user = await User.findByIdAndUpdate({ _id: id }, newUser);
+            return response.json(user);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async deleteUser(request, response) {
+        try {
+            const id = request.params.id;
+            const user = await User.findByIdAndDelete(id);
+            return response.json(user);
+        } catch (error) {
+            console.log(error.message);
         }
     }
 }

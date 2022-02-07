@@ -11,5 +11,8 @@ router.post('/registration', [
 ], controller.registration);
 router.post('/login', controller.login);
 router.get('/users', roleMiddleware(['USER', 'ADMIN']), controller.getUsers);
+router.get('/user/:id', roleMiddleware(['USER', 'ADMIN']), controller.getUserById);
+router.put('/user/update/:id', roleMiddleware(['ADMIN']), controller.updateUser);
+router.delete('/user/delete/:id', roleMiddleware(['USER', 'ADMIN']), controller.deleteUser);
 
 module.exports = router;
